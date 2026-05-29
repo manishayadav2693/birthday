@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1437">
+<title>Avi's Birthday Countdown ♥</title>
+
+<!-- ================================================================= -->
+<!--  NO CODE EDITING NEEDED for content.                             -->
+<!--  • To edit content: tap the small ✦ at the very bottom, type      -->
+<!--    your secret word, and the edit form opens. Fill in, Save.      -->
+<!--  • Two settings below: MODE ("test" = all cards open while you    -->
+<!--    build · "live" = real countdown for Avi) and EDIT_PASSWORD.    -->
+<!-- ================================================================= -->
+
+<script>
+/* ===================== CONFIG ===================== */
+const MODE = "test";                                 /* "test" = all open · "live" = real countdown */
+const EDIT_PASSWORD = "amy2026";                     /* your secret word to unlock editing — change it! */
+const START = { year: 2026, month: 6, day: 6 };      /* first card opens 6 June */
+const BIRTHDAY = { year: 2026, month: 6, day: 22 };  /* finale on 22 June */
+const NAME = "Avi";
+/* ================================================= */
+</script>
+
+<style>
+  :root{
+    --night:#0b1437; --night-2:#0e1a45; --deep:#070d24;
+    --gold:#e6c478; --gold-soft:#caa85c; --gold-dim:rgba(230,196,120,.35);
+    --ink:#eef1fb; --ink-dim:#a6b2d6; --rose:#e6a3b4;
+    --card-line:rgba(230,196,120,.22); --memcol:#9fc8e6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--deep);color:var(--ink);font-family:"Cormorant",Georgia,serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;overflow-x:hidden;position:relative}
+
+  #sky{position:fixed;inset:0;z-index:0;
+    background:radial-gradient(ellipse at 50% -10%, #1b2a63 0%, var(--night) 38%, var(--deep) 100%);overflow:hidden}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:tw var(--d,4s) ease-in-out infinite var(--delay,0s)}
+  @keyframes tw{0%,100%{opacity:.15}50%{opacity:.9}}
+  .shoot{position:absolute;width:90px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.85),transparent);opacity:0;transform:rotate(20deg)}
+
+  .wrap{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 26px) 18px 50px}
+
+  .testbar{background:rgba(230,163,180,.14);border:1px solid rgba(230,163,180,.4);color:var(--rose);
+    border-radius:12px;padding:9px 14px;text-align:center;font-family:"Jost",system-ui,sans-serif;
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+  .editbar{background:rgba(159,200,230,.14);border:1px solid rgba(159,200,230,.45);color:var(--memcol);
+    border-radius:12px;padding:10px 14px;text-align:center;font-family:"Jost",sans-serif;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .editbar button{font-family:"Jost",sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:rgba(159,200,230,.15);border:1px solid rgba(159,200,230,.5);color:var(--memcol);padding:6px 12px;border-radius:20px;cursor:pointer}
+  .editbar button:active{transform:scale(.96)}
+
+  header{text-align:center;padding:14px 0 24px}
+  .kicker{font-family:"Jost",system-ui,sans-serif;letter-spacing:.44em;text-transform:uppercase;font-size:10px;color:var(--gold);font-weight:500;opacity:.9}
+  h1{font-family:"Cormorant",serif;font-size:54px;font-weight:500;line-height:1.02;margin:12px 0 6px;letter-spacing:.5px}
+  h1 .amp{color:var(--gold);font-style:italic}
+  .sub{color:var(--ink-dim);font-size:18px;font-style:italic;letter-spacing:.3px}
+  .counter{margin:22px auto 0;display:inline-flex;align-items:baseline;gap:9px;padding:9px 22px;
+    border:1px solid var(--card-line);border-radius:40px;background:rgba(11,20,55,.5);backdrop-filter:blur(6px)}
+  .counter b{font-family:"Cormorant",serif;font-size:30px;color:var(--gold);font-weight:600}
+  .counter span{font-family:"Jost",sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim)}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:8px}
+  @media(min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+  .tile{position:relative;aspect-ratio:1/1.12;border-radius:16px;border:1px solid var(--card-line);overflow:hidden;cursor:pointer;
+    background:linear-gradient(160deg,var(--night-2),var(--night));display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:transform .25s ease, box-shadow .3s ease, border-color .3s ease}
+  .tile:active{transform:scale(.97)}
+  .tile .num{font-family:"Cormorant",serif;font-size:46px;font-weight:500;line-height:1}
+  .tile .lbl{font-family:"Jost",sans-serif;font-size:9px;letter-spacing:.22em;text-transform:uppercase;margin-top:6px;color:var(--ink-dim)}
+
+  .tile.locked{cursor:default;background:linear-gradient(160deg,#0c1535,#080f26)}
+  .tile.locked .num{color:rgba(166,178,214,.30)}
+  .tile.locked .lock{font-size:19px;color:var(--gold-dim);margin-bottom:6px}
+  .tile.locked .when{font-family:"Jost",sans-serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-soft);margin-top:7px;opacity:.8;text-align:center;padding:0 6px}
+
+  .tile.ready{border-color:var(--card-line);animation:pulse 3.2s ease-in-out infinite}
+  .tile.ready .num{color:var(--gold)}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 1px transparent,0 6px 18px rgba(0,0,0,.25)}50%{box-shadow:0 0 0 1px var(--gold-dim),0 6px 26px rgba(230,196,120,.16)}}
+  .tile.ready .tap{position:absolute;bottom:9px;font-family:"Jost",sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.9}
+
+  .tile.opened{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 22px rgba(230,196,120,.35)}
+  .tile.opened .num{color:var(--gold)}
+  .tile.opened .seen{position:absolute;top:8px;right:9px;color:var(--gold);font-size:13px;
+    text-shadow:0 0 8px rgba(230,196,120,.9);animation:twinkleSeen 2.4s ease-in-out infinite}
+  .tile.opened::before,.tile.opened::after{content:"✦";position:absolute;color:var(--gold);
+    font-size:11px;opacity:.85;text-shadow:0 0 6px rgba(230,196,120,.9);animation:twinkleSeen 2.8s ease-in-out infinite}
+  .tile.opened::before{top:7px;left:9px}
+  .tile.opened::after{bottom:7px;right:10px;animation-delay:1.2s}
+  @keyframes twinkleSeen{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+
+  .tile.finale{grid-column:1 / -1;aspect-ratio:auto;padding:24px 16px;background:linear-gradient(135deg,#16235c,#0b1437 60%,#1a1230);border-color:var(--gold)}
+  .tile.finale.locked{background:linear-gradient(135deg,#0d1638,#080f26)}
+  .tile.finale .num{font-size:23px;font-style:italic}
+  .tile.finale .cake{font-size:30px;margin-bottom:8px}
+
+  .overlay{position:fixed;inset:0;z-index:50;background:rgba(4,7,20,.86);backdrop-filter:blur(10px);display:none;align-items:flex-start;justify-content:center;overflow-y:auto}
+  .overlay.show{display:flex}
+  .card{position:relative;width:100%;max-width:560px;min-height:100vh;background:linear-gradient(180deg,var(--night),var(--deep));
+    padding:calc(env(safe-area-inset-top) + 22px) 24px calc(env(safe-area-inset-bottom) + 50px);animation:rise .5s cubic-bezier(.2,.7,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+  .close{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;width:38px;height:38px;border-radius:50%;
+    border:1px solid var(--card-line);background:rgba(255,255,255,.04);color:var(--gold);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
+
+  .c-date{text-align:center;color:var(--gold-soft);font-style:italic;font-size:22px;margin-top:24px;letter-spacing:.5px}
+  .c-num{font-family:"Jost",sans-serif;letter-spacing:.36em;text-transform:uppercase;font-size:10px;color:var(--gold);text-align:center;margin-top:8px;font-weight:500}
+
+  .media{margin:22px 0;border-radius:18px;overflow:hidden;border:1px solid var(--card-line);background:#0a1230}
+  .media img{width:100%;display:block}
+  .media .ph{aspect-ratio:4/3;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;color:var(--ink-dim);font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+  .media .ph .ic{font-size:30px;opacity:.5}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+  .block{margin:24px 0}
+  .block .body{font-size:23px;line-height:1.62;color:var(--ink);letter-spacing:.2px}
+  .block .body.note{font-size:24px;font-style:italic;color:#f2e7cd;line-height:1.6}
+  .block .body.reason{font-size:26px;text-align:center;line-height:1.55;font-style:italic;color:#f4dde4}
+
+  /* ===== MEMORY TEMPLATE — photo-first scrapbook / polaroid ===== */
+  .polaroid{margin:22px auto 6px;background:#f7f4ec;padding:12px 12px 0;border-radius:4px;
+    box-shadow:0 14px 40px rgba(0,0,0,.45);transform:rotate(-1.4deg);max-width:430px}
+  .polaroid:nth-of-type(even){transform:rotate(1.2deg)}
+  .polaroid img{width:100%;display:block;border-radius:2px}
+  .polaroid .ph{aspect-ratio:4/3;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;
+    background:#ece7da;color:#9a917c;font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+  .polaroid .ph .ic{font-size:30px;opacity:.5}
+  .polaroid .vid{position:relative;width:100%;aspect-ratio:16/9}
+  .polaroid .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:2px}
+  .polaroid .cap{font-family:"Cormorant",serif;color:#3a3528;font-size:15px;font-style:italic;
+    text-align:center;padding:12px 6px 14px}
+  .mem-story{font-size:23px;line-height:1.64;color:var(--ink);letter-spacing:.2px;margin:18px 2px 0}
+
+  /* ===== REASON TEMPLATE — words-first love letter, soft image below ===== */
+  .reason-hero{font-family:"Cormorant",serif;font-size:30px;line-height:1.5;font-style:italic;
+    text-align:center;color:#f4dde4;margin:30px 6px 24px;font-weight:500}
+  .reason-mark{text-align:center;color:var(--rose);font-size:34px;line-height:0;margin:30px 0 18px;opacity:.6;font-family:"Cormorant",serif}
+  .reason-img{margin:8px auto 0;max-width:300px;border-radius:140px/120px;overflow:hidden;
+    border:1px solid rgba(230,163,180,.3);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .reason-img img{width:100%;display:block}
+  .reason-img.vid{border-radius:18px}
+  .reason-img .vidwrap{position:relative;width:100%;aspect-ratio:16/9}
+  .reason-img .vidwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+  /* hint card — ONLY the hint shows. No reveal, no answer. */
+  .hint-card{border:1px solid var(--gold-dim);border-radius:18px;padding:8px 24px 30px;margin:54px 0 24px;background:rgba(230,196,120,.06);text-align:center;position:relative}
+  .hint-crest{width:60px;height:60px;margin:-38px auto 14px;border-radius:50%;
+    background:radial-gradient(circle at 50% 35%,#1a2a5e,#0b1437);border:1px solid var(--gold);
+    box-shadow:0 6px 20px rgba(0,0,0,.45),inset 0 0 18px rgba(230,196,120,.18);
+    display:flex;align-items:center;justify-content:center;font-size:26px}
+  .hint-card .tag{font-family:"Jost",sans-serif;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .hint-card .tagsub{font-family:"Cormorant",serif;font-style:italic;font-size:18px;color:var(--ink-dim);margin-bottom:18px}
+  .hint-card .riddle{font-size:24px;font-style:italic;line-height:1.6;color:#f2e7cd}
+  .hint-card .flourish{margin-top:18px;color:var(--gold-soft);font-size:18px;opacity:.7;letter-spacing:.4em}
+
+  .sig{text-align:center;margin-top:38px;color:var(--gold-soft);font-style:italic;font-size:18px}
+
+  #fx{position:fixed;inset:0;z-index:60;pointer-events:none;display:none}
+
+  .card.fin{background:radial-gradient(ellipse at 50% 0%,#241653,#0b1437 55%,#070d24)}
+  .card.fin h2{font-family:"Cormorant",serif;text-align:center;font-size:46px;font-weight:500;margin:14px 0 4px}
+  .card.fin h2 em{color:var(--gold);font-style:italic}
+
+  .hint{text-align:center;color:var(--ink-dim);font-size:13px;font-family:"Jost",sans-serif;letter-spacing:.05em;margin-top:30px;opacity:.65}
+  .footer{text-align:center;margin-top:40px;color:var(--gold-soft);font-family:"Cormorant",serif;font-size:18px;font-style:italic;letter-spacing:.3px;opacity:.85}
+  .editdot{display:block;text-align:center;margin-top:22px;color:rgba(166,178,214,.35);font-size:16px;cursor:pointer;user-select:none}
+
+  /* password prompt */
+  .pwbox{display:none;margin:14px auto 0;max-width:280px;text-align:center}
+  .pwbox.show{display:block}
+  .pwbox input{width:100%;background:#0a1230;border:1px solid var(--card-line);border-radius:10px;color:var(--ink);
+    font-family:"Jost",sans-serif;font-size:14px;letter-spacing:.1em;text-align:center;padding:11px;margin-bottom:8px}
+  .pwbox input:focus{outline:none;border-color:var(--gold)}
+  .pwbox button{font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    background:rgba(230,196,120,.15);border:1px solid var(--gold-dim);color:var(--gold);padding:9px 18px;border-radius:20px;cursor:pointer}
+
+  .editform{display:none;margin:18px 0}
+  .editform.show{display:block}
+  .ef-day{border:1px solid var(--card-line);border-radius:14px;padding:16px;margin-bottom:14px;background:rgba(11,20,55,.5)}
+  .ef-day h3{font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-weight:500}
+  .ef-field{margin-bottom:10px}
+  .ef-field label{display:block;font-family:"Jost",sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px}
+  .ef-field input,.ef-field textarea{width:100%;background:#0a1230;border:1px solid var(--card-line);border-radius:8px;color:var(--ink);font-family:"Cormorant",serif;font-size:17px;padding:9px 11px;resize:vertical}
+  .ef-field textarea{min-height:64px;line-height:1.5}
+  .ef-field input:focus,.ef-field textarea:focus{outline:none;border-color:var(--gold)}
+  .ef-clear{font-family:"Jost",sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    background:rgba(230,163,180,.12);border:1px solid rgba(230,163,180,.4);color:var(--rose);
+    padding:0 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .ef-clear:active{transform:scale(.96)}
+  .ef-photo{display:flex;gap:12px;align-items:center}
+  .ef-thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;flex-shrink:0;
+    background:#0a1230;border:1px solid var(--card-line);display:flex;align-items:center;justify-content:center}
+  .ef-thumb img{width:100%;height:100%;object-fit:cover}
+  .ef-thumb span{font-family:"Jost",sans-serif;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim)}
+  .ef-photo-btns{display:flex;flex-direction:column;gap:6px}
+  .ef-upload{font-family:"Jost",sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:rgba(230,196,120,.15);border:1px solid var(--gold-dim);color:var(--gold);padding:8px 14px;border-radius:8px;cursor:pointer}
+  .ef-upload:active{transform:scale(.96)}
+  .ef-orlink{margin-top:8px}
+  .ef-orlink input{width:100%;background:#0a1230;border:1px solid var(--card-line);border-radius:8px;color:var(--ink);font-family:"Cormorant",serif;font-size:15px;padding:8px 11px}
+  .ef-orlink input:focus{outline:none;border-color:var(--gold)}
+  .ef-save{position:sticky;bottom:16px;width:100%;background:var(--gold);color:#1a1206;border:0;font-family:"Jost",sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;padding:15px;border-radius:30px;cursor:pointer;margin-top:8px;box-shadow:0 6px 24px rgba(230,196,120,.3)}
+  .ef-save:active{transform:scale(.98)}
+  .savetoast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:90;background:var(--gold);color:#1a1206;font-family:"Jost",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;border-radius:30px;opacity:0;transition:opacity .3s;pointer-events:none}
+  .savetoast.show{opacity:1}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="sky"></div>
+<canvas id="fx"></canvas>
+<div class="savetoast" id="toast">Saved ♥</div>
+
+<div class="wrap">
+  <div class="testbar" id="testbar" style="display:none">Test mode — all cards unlocked. Switch MODE to "live" before gifting.</div>
+  <div class="editbar" id="editbar" style="display:none">
+    <span>Edit mode</span>
+    <button onclick="exportData()">Back up ↓</button>
+    <button onclick="document.getElementById('importfile').click()">Restore ↑</button>
+    <button onclick="resetOpened()">Reset opened</button>
+    <button onclick="exitEdit()">Done</button>
+    <input type="file" id="importfile" accept="application/json" style="display:none" onchange="importData(this)">
+  </div>
+
+  <header>
+    <div class="kicker">A little countdown</div>
+    <h1 id="title">Avi's Birthday<br><span class="amp">Countdown</span></h1>
+    <div class="sub">until the most favourite day of the year</div>
+    <div class="counter" id="counter"><b id="cnum">–</b><span id="ctxt">days to go</span></div>
+  </header>
+
+  <div class="editform" id="editform"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="hint" id="hint"></div>
+  <div class="footer">Made with love by your Amy</div>
+
+  <div class="editdot" id="editdot" title="">✦</div>
+  <div class="pwbox" id="pwbox">
+    <input type="password" id="pwinput" placeholder="secret word" autocomplete="off">
+    <button onclick="checkPw()">Unlock</button>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- ====  DEFAULT CONTENT (loads first time; afterwards the app uses === -->
+<!-- ====  your saved version). Use Edit mode, not this, to change.  === -->
+<!-- =================================================================== -->
+<script>
+const DEFAULT_DAYS = [
+
+  { date:"6 June", cat:"surprise",
+    riddle:"You'd never pick these for yourself — so I did the picking, four little somethings, all with you in mind. They're waiting where the workday begins, behind the doors you can never bear to keep closed. A word of warning before you go: <em>check</em> yourself before you wreck yourself, <em>mind your mandarins</em>, and whatever you do, don't get <em>chino'd</em> out of the surprise. Go find them. 👀",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  { date:"7 June", cat:"surprise",
+    riddle:"When you're back from Church today, close your eyes for a moment. You might find yourself somewhere far from here, somewhere green, somewhere high, somewhere that knows you. Not literally, but the feeling of it will hopefully carry you to a familiar place. Come and let it.",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  { date:"8 June", cat:"memory",
+    memory:"Christmas, oh Christmas Eve. How much I wanted to do for you, to make the whole day about you — and how little I managed, with Sanskar pulling me away from you, away from home. I came back clutching a tiny little tree that wasn't even really mine — a pity rescue to save my face — my small, sorry attempt… only to walk in to the most enormous one already standing there. You'd made it all about me. About us. Our house looked like it had stepped straight out of a postcard: the red poinsettias, every bit of that cute decor you'd put up. I just stood there in astonishment. That's what you do. You make it all about me, every single time.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"9 June", cat:"reason",
+    reason:"\"Love is in the details. It's in the things that you notice when you didn't have to.\" — Julie Murphy's line from Dumplin' has become so real to me.\n\nYou notice. And you act. And you act like it's no effort at all, like it's just part of your daily rhythm. These acts are the unglamorous ones, the unphotographed, easily-missed ones. But if I were to gather up all of yours, every small thing you do without ever being asked, you'd have built a mountain by now.\n\nThe spraying of the room for lizards before I ever walk in, so I never have to flinch. The tea you make me every single night, like a small ritual neither of us names. The way you oil and rub my feet before I go to bed. The flowers you spoil me with. The iced coffee — the best in the entire world, made just the way I like it, handed over like it's nothing. The compliment that arrives every single day, like clockwork, like you actually mean it, because you do.\n\nHow beautiful is it, to do these endlessly? You do the small ones, over and over, and that is so much harder and so much rarer than any grand gesture. I notice every single one. I have been quietly keeping count. And I love you for all of it, for the mountain you have so very undeliberately built.",
+    note:"", memory:"", riddle:"", photo:"", video:"" },
+
+  { date:"10 June", cat:"memory",
+    memory:"Our first Diwali, I had to leave to be with my parents, as the ritual goes, but you made sure I celebrated before I went. The diyas, the paper lanterns, our whole corner glowing. And watching how excited you were, over a festival so dear to me, I realised it right then: on the festival of lights, the light of my life was standing right in front of me.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"11 June", cat:"reason",
+    reason:"Your patience and level-headedness are of a kind I can only call extraordinaire. I will come and ramble at you, yap endlessly about my day, spill every little thing, and you lend me your attention so completely, so genuinely interested, your eyes not leaving my face for even a second. As if there were nowhere else in the world you'd rather be looking.\n\nAnd then, in the very same breath, I'll switch to reciting your list of crimes: the trash that needs taking out, the toilet paper that needs changing, the drainage that's acting up again, the plants gasping for water, the running tally of chores I've appointed myself to remind you of. And you, unbothered, unshakeable, will just look at me and say, \"Okay, bubba, I'll do it.\"\n\nNo sighs. No defensiveness. Never once have I seen you lose your head. You are the calmest, steadiest, most even-keeled person I know, and being loved by someone that unflappable is such a blessing to my nervous system.",
+    note:"", memory:"", riddle:"", photo:"", video:"" },
+
+  { date:"12 June", cat:"memory",
+    memory:"Running and I are like Tom and Jerry — except even that comparison flatters me, because at least Tom loves the chase. I can't even manage that much, on account of the fact that chasing would require, well, running. And yet \"run a marathon\" has stubbornly sat on my New Year's resolution list for many, many years, right alongside my genuine contempt for the activity itself.\n\nI never actually thought I'd tick it off. Not really. Certainly not without you. I could not have done this 5k without you, my love — you pulled me through every step I was sure I had no business taking.\n\nAnd here's the funny thing, the part that surprises even me: I think I want to do more of them. On one condition, and one condition only — only ever with you.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"13 June", cat:"surprise",
+    riddle:"Today, we go where the city forgets to be loud. Somewhere old and green and walled-in with quiet. Wear something you can sit on the ground in, and bring nothing but an appetite — the rest is already taken care of.",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  { date:"14 June", cat:"surprise",
+    riddle:"Some afternoons are for relaxing. This is not one of them. Today we roll, we deal, we strategise, we trash-talk — and we find out, once and for all, which of us is the sore loser.",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  { date:"15 June", cat:"memory",
+    memory:"Vietnam was exhilarating for the place that it is, but for me, it was made by the person I was seeing it with. Because you aren't just the best boyfriend; you are, hands down, the best travel partner I could ask for. So easy to be with, so happy to go with the flow, to follow a plan without a single fuss.\n\nThe café-hopping. The three coffees a day, every day — honestly, who else on earth would match that energy without blinking? And the walks. So many walks, to anywhere and everywhere that looked even slightly beautiful, just because we could.\n\nOur first trip overseas together. It's etched into my memory forever, exactly as it was. And it's only the first of so, so many more to come.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"16 June", cat:"reason",
+    reason:"Has anyone ever told you how you smile? It begins at your mouth and then forgets where to stop — it gathers up your cheeks, reaches your eyes, settles into the soft crinkle of crow's feet at the corners. A smile that holds everything and hides nothing. I fall in love with you a little more with each one, every single time.\n\nAnd your laughter — that sound is the closest thing I know to heaven. So I've made it my quiet life's work: to say the silly thing, to do the small thing, to chase that laugh out of you again and again.\n\nMy sweet pea, the best part is this — it takes so very little. And I would spend a lifetime doing it.",
+    note:"", memory:"", riddle:"", photo:"", video:"" },
+
+  { date:"17 June", cat:"memory",
+    memory:"A core memory: the day I brought you home to my parents. As my partner. To ask, without quite saying it, for their blessing.\n\nYou met them with so much warmth, so much respect — the language barriers melting away into smiles and gestures.\n\nIt was a tender, nervous thing for me, introducing one of my most favourite men in the world to another. And then my father looked up and asked you, plainly — \"Are you happy with her?\"\n\nYou grinned, almost startled, as though the question shouldn't have existed in the first place. And then you gathered your words, for me to carry across to my father — that she is so kind, so compassionate, and yes, you are happy. And my father said: if that's the case, then we are happy too.\n\nMy heart wept the happiest tears.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"18 June", cat:"reason",
+    reason:"You pick me up from the airport. Every single time.\n\nAfter a long day of work, you grab some dinner in a hurry, just so you can be there — standing, waiting, watching the gates for me to walk through.\n\nThis is the soft romance I used to only ever watch in reels. The kind I thought belonged to other people, other lives. I never imagined it could be mine. And the way your face lights up the moment you see me — that look undoes me a little, every single time.\n\nThe thing about a love this steady is that it quietly spoils you. So now, on the days you're stuck in meetings and can't make it, I still find myself hoping. Every time I land at T1, I walk toward Gate C, past Blue Tokai — some small, secret part of me is certain I'll look up and find you standing there. And I know on most days, I will find you.",
+    note:"", memory:"", riddle:"", photo:"", video:"" },
+
+  { date:"19 June", cat:"memory",
+    memory:"Turning this apartment into a home with you — one piece of furniture at a time, one plant at a time, one corner at a time — has been a quiet dream coming true.\n\nAnd what an honour it is to share this space with you. To wake up beside you. To watch you simply be yourself, and to be the quiet witness to all your days and nights.\n\nAnd though you do still manage to sweep me off my feet on a regular basis — I'm glad to report the roof, at least, remains fully intact.",
+    photo:"", video:"", note:"", riddle:"", reason:"" },
+
+  { date:"20 June", cat:"surprise",
+    riddle:"Remember those four little somethings you found earlier? Tonight feels like the perfect excuse to wear one. Dress up, my love — there's an evening planned that deserves it, and a seat across the table with your name on it.",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  { date:"21 June", cat:"surprise",
+    riddle:"Somewhere close by, something tiny is waiting for you. Small enough to clip onto your keys, charming enough to have earned the name. Go look where you reach for your everyday essentials. Find it — and then your one mission for today is simple: point it at everything. Catch this day, in all its gorgeous, grainy, lo-fi glory. Let's go make something we get to keep forever. 📸",
+    memory:"", reason:"", photo:"", video:"", note:"" },
+
+  /* FINALE · 22 June */
+  { date:"22 June · Happy Birthday", cat:"finale",
+    riddle:"",
+    reason:"",
+    memory:"Happy birthday, my love. Hands down, my most favourite day of the year.\n\nSixteen days I've been leaving you little pieces of us — memories, reasons, small surprises — and still it doesn't come close to holding everything I feel.\n\nSo today, I'll just say this: getting to love you, and be loved by you, is the greatest fortune of my life. I need nothing else.",
+    photo:"", video:"", note:"" }
+
+];
+</script>
+
+<!-- =================================================================== -->
+<!-- ============   APP LOGIC — no need to edit          ============== -->
+<script>
+/* starfield */
+(function(){
+  const sky=document.getElementById('sky');const n=window.innerWidth<500?70:120;
+  for(let i=0;i<n;i++){const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+0.5;s.style.width=s.style.height=sz+'px';
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.setProperty('--d',(Math.random()*4+2)+'s');s.style.setProperty('--delay',(Math.random()*4)+'s');sky.appendChild(s);}
+  function shoot(){const el=document.createElement('div');el.className='shoot';
+    el.style.left=Math.random()*60+'%';el.style.top=Math.random()*40+'%';sky.appendChild(el);
+    el.animate([{opacity:0,transform:'translate(0,0) rotate(20deg)'},{opacity:1,offset:.2},{opacity:0,transform:'translate(220px,80px) rotate(20deg)'}],{duration:1100,easing:'ease-out'});
+    setTimeout(()=>el.remove(),1200);setTimeout(shoot,6000+Math.random()*9000);}
+  setTimeout(shoot,3000);
+})();
+
+const DATA_STORE='aviCountdownData_v2';
+function loadDays(){try{const s=localStorage.getItem(DATA_STORE);if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_DAYS));}
+function saveDays(d){localStorage.setItem(DATA_STORE,JSON.stringify(d));}
+let DAYS=loadDays();
+
+function midnight(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+const startDate=midnight(new Date(START.year,START.month-1,START.day));
+const bday=midnight(new Date(BIRTHDAY.year,BIRTHDAY.month-1,BIRTHDAY.day));
+const TEST=(MODE==="test");
+function todayMid(){return midnight(new Date());}
+function unlockDateFor(i){const d=new Date(startDate);d.setDate(d.getDate()+i);return d;}
+function isUnlocked(i){if(TEST)return true;return todayMid().getTime()>=unlockDateFor(i).getTime();}
+function daysUntil(i){return Math.round((unlockDateFor(i).getTime()-todayMid().getTime())/86400000);}
+
+const OPEN_STORE='aviCountdownOpened_v2';
+function getOpened(){try{return JSON.parse(localStorage.getItem(OPEN_STORE)||'[]')}catch(e){return[]}}
+function markOpened(i){const o=getOpened();if(!o.includes(i)){o.push(i);localStorage.setItem(OPEN_STORE,JSON.stringify(o))}}
+
+const FIN=DAYS.length-1;
+if(TEST)document.getElementById('testbar').style.display='block';
+
+function renderCounter(){
+  const left=Math.round((bday.getTime()-todayMid().getTime())/86400000);
+  const cnum=document.getElementById('cnum'),ctxt=document.getElementById('ctxt');
+  if(left>1){cnum.textContent=left;ctxt.textContent='days to go';}
+  else if(left===1){cnum.textContent=1;ctxt.textContent='day to go';}
+  else if(left===0){cnum.textContent='♥';ctxt.textContent='today is the day';}
+  else {cnum.textContent='♥';ctxt.textContent='happy birthday';}
+}
+renderCounter();
+
+const grid=document.getElementById('grid');
+function render(){
+  grid.innerHTML='';const opened=getOpened();
+  DAYS.forEach((d,i)=>{
+    const isFin=(d.cat==='finale'),unlocked=isUnlocked(i),wasOpened=opened.includes(i);
+    const t=document.createElement('div');t.className='tile'+(isFin?' finale':'');
+    if(!unlocked){
+      t.className+=' locked';const wait=daysUntil(i);
+      t.innerHTML=isFin
+        ? `<div class="cake">🎂</div><div class="num">The Big Day</div><div class="when">unlocks 22 June</div>`
+        : `<div class="lock">🔒</div><div class="num">${FIN-i}</div><div class="when">${wait===1?'opens tomorrow':'in '+wait+' days'}</div>`;
+    }else{
+      t.className+= wasOpened?' opened':' ready';
+      if(isFin){t.innerHTML=`<div class="cake">🎂</div><div class="num">Most favourite day of the year!</div>`;}
+      else{const countdownNum=FIN-i;t.innerHTML=`<div class="num">${countdownNum}</div><div class="lbl">${countdownNum===1?'day to go':'days to go'}</div>`+(wasOpened?`<div class="seen">♥</div>`:`<div class="tap">tap to open</div>`);}
+      t.onclick=()=>openCard(i);
+    }
+    grid.appendChild(t);
+  });
+}
+render();
+
+function renderHint(){
+  const hint=document.getElementById('hint');
+  if(TEST){hint.textContent='Tap any card to preview.';return;}
+  const nextLocked=DAYS.findIndex((d,i)=>!isUnlocked(i));
+  if(nextLocked===-1){hint.textContent='Every day is open now. ♥';return;}
+  const w=daysUntil(nextLocked);
+  hint.textContent=w<=0?'A new day is ready ♥':(DAYS[nextLocked].cat==='finale'?`The big day opens in ${w} ${w===1?'day':'days'}.`:`Day ${nextLocked+1} opens ${w===1?'tomorrow':'in '+w+' days'} at midnight.`);
+}
+renderHint();
+
+function mediaHTML(d){
+  if(d.video&&d.video.trim())return `<div class="media"><div class="video-wrap"><iframe src="${d.video}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div></div>`;
+  if(d.photo&&d.photo.trim())return `<div class="media"><img src="${d.photo}" alt=""></div>`;
+  return `<div class="media"><div class="ph"><div class="ic">❀</div>a photo of us</div></div>`;
+}
+function block(body,cls){if(!body||!body.trim())return'';return `<div class="block"><div class="body ${cls||''}">${body.replace(/\n/g,'<br>')}</div></div>`;}
+
+/* MEMORY: photo-first polaroid, story below */
+function memoryHTML(d){
+  let inner;
+  if(d.video&&d.video.trim()) inner=`<div class="vid"><iframe src="${d.video}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div>`;
+  else if(d.photo&&d.photo.trim()) inner=`<img src="${d.photo}" alt="">`;
+  else inner=`<div class="ph"><div class="ic">❀</div>a photo of us</div>`;
+  const cap = (d.date||'');
+  let html=`<div class="polaroid">${inner}<div class="cap">${cap}</div></div>`;
+  if(d.memory&&d.memory.trim()) html+=`<div class="mem-story">${d.memory.replace(/\n/g,'<br>')}</div>`;
+  return html;
+}
+/* REASON: words first (hero), soft image below if present */
+function reasonHTML(d){
+  let html=`<div class="reason-mark">&ldquo;</div>`;
+  html+=`<div class="reason-hero">${(d.reason||'').replace(/\n/g,'<br>')}</div>`;
+  if(d.video&&d.video.trim()) html+=`<div class="reason-img vid"><div class="vidwrap"><iframe src="${d.video}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div></div>`;
+  else if(d.photo&&d.photo.trim()) html+=`<div class="reason-img"><img src="${d.photo}" alt=""></div>`;
+  else html+=`<div class="reason-mark" style="opacity:.4;font-size:26px">♥</div>`;
+  return html;
+}
+
+function openCard(i){
+  const d=DAYS[i],isFin=(d.cat==='finale');
+  const ov=document.createElement('div');ov.className='overlay show';
+  const card=document.createElement('div');card.className='card'+(isFin?' fin':'');
+  let inner=`<div class="close" onclick="closeCard(this)">×</div>`;
+
+  if(isFin){
+    inner+=`<h2>Happy Birthday<br><em>${NAME}</em></h2><div class="c-date">${d.date}</div>`;
+    inner+=mediaHTML(d);
+    inner+=block(d.memory,'note');
+    inner+=block(d.reason,'reason');
+    if(d.riddle&&d.riddle.trim()){
+      inner+=`<div class="hint-card"><div class="hint-crest">📸</div><div class="tag">Your final hunt</div><div class="tagsub">one last clue, the best one…</div><div class="riddle">${(d.riddle||'').replace(/\n/g,'<br>')}</div><div class="flourish">✦ ✦ ✦</div></div>`;
+    }
+  }
+  else if(d.cat==='surprise'){
+    inner+=`<div class="c-date">${d.date}</div>`;
+    inner+=`<div class="hint-card"><div class="hint-crest">🔑</div><div class="tag">A clue for you</div><div class="tagsub">follow it and see where it leads…</div><div class="riddle">${(d.riddle||'').replace(/\n/g,'<br>')}</div><div class="flourish">✦ ✦ ✦</div></div>`;
+  }
+  else if(d.cat==='memory'){
+    inner+=memoryHTML(d);
+  }
+  else if(d.cat==='reason'){
+    inner+=`<div class="c-date">${d.date}</div>`;
+    inner+=reasonHTML(d);
+  }
+  if(d.note&&d.note.trim())inner+=`<div class="sig">${d.note.replace(/\n/g,'<br>')}</div>`;
+
+  card.innerHTML=inner;ov.appendChild(card);
+  ov.onclick=(e)=>{if(e.target===ov)closeCard(card);};
+  document.body.appendChild(ov);document.body.style.overflow='hidden';
+  if(!getOpened().includes(i)){markOpened(i);confetti(isFin?180:70);}
+}
+function closeCard(el){
+  const ov=el.closest('.overlay');ov.style.opacity='0';ov.style.transition='opacity .25s';
+  setTimeout(()=>{ov.remove();document.body.style.overflow='';render();},250);
+}
+
+(function(){const m=location.search.match(/peek=(\d+)/);if(m){const i=parseInt(m[1],10)-1;if(i>=0&&i<DAYS.length)setTimeout(()=>openCard(i),400);}})();
+
+/* ===== password-gated edit ===== */
+const editdot=document.getElementById('editdot'),pwbox=document.getElementById('pwbox'),pwinput=document.getElementById('pwinput');
+editdot.onclick=()=>{pwbox.classList.toggle('show');if(pwbox.classList.contains('show'))pwinput.focus();};
+pwinput.addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+function checkPw(){
+  if(pwinput.value===EDIT_PASSWORD){pwbox.classList.remove('show');pwinput.value='';enterEdit();}
+  else{pwinput.value='';pwinput.placeholder='try again';}
+}
+if(location.search.indexOf('edit')>-1)setTimeout(enterEdit,300);
+
+const CATLABEL={memory:"Memory card",reason:"Note card",surprise:"Hint card",finale:"Finale"};
+function enterEdit(){
+  document.getElementById('editbar').style.display='flex';
+  document.getElementById('grid').style.display='none';
+  const ef=document.getElementById('editform');ef.classList.add('show');
+  const FIELDS={
+    surprise:[['riddle','The hint / riddle (this is ALL Avi sees)']],
+    memory:[['memory','The memory'],['photo','Photo link or paste (optional)'],['video','Video embed — YouTube /embed/ or Drive /preview (optional)'],['note','Little note (optional)']],
+    reason:[['reason','The reason I love you'],['photo','Photo link or paste (optional)'],['video','Video embed — YouTube /embed/ or Drive /preview (optional)'],['note','Little note (optional)']],
+    finale:[['memory','Birthday message'],['reason','What I love most (write this one ♥)'],['riddle','The Charmera hunt hint'],['photo','Photo (optional)'],['video','Video (optional)'],['note','Closing line']]
+  };
+  let html='';
+  DAYS.forEach((d,i)=>{
+    const isFin=d.cat==='finale';
+    html+=`<div class="ef-day"><h3>${isFin?'Finale':'Day '+(i+1)} · ${d.date} · ${CATLABEL[d.cat]}</h3>`;
+    (FIELDS[d.cat]||[]).forEach(([key,label])=>{
+      if(key==='photo'){const val=(d[key]||'').replace(/"/g,'&quot;');
+        const hasImg=d[key]&&d[key].trim();
+        html+=`<div class="ef-field"><label>${label}</label>`
+          +`<div class="ef-photo">`
+          +`<div class="ef-thumb" id="thumb-${i}">${hasImg?`<img src="${val}">`:`<span>no photo</span>`}</div>`
+          +`<div class="ef-photo-btns">`
+          +`<button type="button" class="ef-upload" onclick="document.getElementById('up-${i}').click()">Upload photo</button>`
+          +`<button type="button" class="ef-clear" onclick="clearPhoto(${i})">Remove</button>`
+          +`<input type="file" id="up-${i}" accept="image/*" style="display:none" onchange="uploadPhoto(this,${i})">`
+          +`</div></div>`
+          +`<input type="hidden" data-i="${i}" data-k="${key}" id="photoval-${i}" value="${val}">`
+          +`<div class="ef-orlink"><input data-i="${i}" data-k="${key}" placeholder="…or paste an image link" value="" oninput="document.getElementById('photoval-${i}').value=this.value">`
+          +`</div></div>`;}
+      else if(key==='video'){const val=(d[key]||'').replace(/"/g,'&quot;');
+        html+=`<div class="ef-field"><label>${label}</label><div style="display:flex;gap:8px"><input style="flex:1" data-i="${i}" data-k="${key}" value="${val}"><button type="button" class="ef-clear" onclick="this.previousElementSibling.value='';">Clear</button></div></div>`;}
+      else{html+=`<div class="ef-field"><label>${label}</label><textarea data-i="${i}" data-k="${key}">${d[key]||''}</textarea></div>`;}
+    });
+    html+=`</div>`;
+  });
+  html+=`<button class="ef-save" onclick="saveEdits()">Save everything ♥</button>`;
+  ef.innerHTML=html;window.scrollTo(0,0);
+}
+function saveEdits(){
+  // text + video fields
+  document.querySelectorAll('#editform textarea[data-i], #editform input[data-k="video"]').forEach(el=>{DAYS[+el.dataset.i][el.dataset.k]=el.value;});
+  // photo: take the hidden canonical value (set by upload or link)
+  document.querySelectorAll('#editform input[type="hidden"][data-k="photo"]').forEach(el=>{DAYS[+el.dataset.i].photo=el.value;});
+  saveDays(DAYS);toast('Saved ♥');
+}
+function clearPhoto(i){
+  document.getElementById('photoval-'+i).value='';
+  const t=document.getElementById('thumb-'+i);t.innerHTML='<span>no photo</span>';
+  const link=document.querySelector('#editform .ef-orlink input[data-i="'+i+'"]');if(link)link.value='';
+}
+function uploadPhoto(input,i){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      // shrink to max 1000px on the long edge, compress to keep file small
+      const max=1000;let w=img.width,h=img.height;
+      if(w>h&&w>max){h=Math.round(h*max/w);w=max;}
+      else if(h>=w&&h>max){w=Math.round(w*max/h);h=max;}
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      const data=c.toDataURL('image/jpeg',0.82);
+      document.getElementById('photoval-'+i).value=data;
+      document.getElementById('thumb-'+i).innerHTML='<img src="'+data+'">';
+      toast('Photo added ♥');
+    };
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(f);
+}
+function exitEdit(){
+  document.getElementById('editbar').style.display='none';
+  document.getElementById('editform').classList.remove('show');
+  document.getElementById('editform').innerHTML='';
+  document.getElementById('grid').style.display='';
+  DAYS=loadDays();render();renderHint();
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+function resetOpened(){localStorage.removeItem(OPEN_STORE);render();toast('Opened reset ♥');}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(DAYS,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='avi-countdown-backup.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Backed up ↓');
+}
+function importData(input){
+  const f=input.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(Array.isArray(d)&&d.length){DAYS=d;saveDays(DAYS);toast('Restored ↑');
+    document.getElementById('editform').classList.contains('show')?enterEdit():(render(),renderHint());}}catch(e){toast('Could not read file');}};
+  r.readAsText(f);
+}
+
+function confetti(count){
+  const c=document.getElementById('fx'),ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;c.style.display='block';
+  const cols=['#e6c478','#caa85c','#e6a3b4','#9fc8e6','#ffffff','#f2e7cd'],P=[];
+  for(let i=0;i<count;i++)P.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*0.35,vx:(Math.random()-.5)*9,vy:Math.random()*-11-3,g:.32+Math.random()*.15,s:Math.random()*7+3,col:cols[Math.random()*cols.length|0],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:1});
+  let frame=0;(function loop(){ctx.clearRect(0,0,c.width,c.height);frame++;let alive=false;
+    P.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(frame>60)p.life-=.02;
+      if(p.life>0&&p.y<innerHeight+40){alive=true;ctx.save();ctx.globalAlpha=Math.max(0,p.life);ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.col;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore();}});
+    if(alive)requestAnimationFrame(loop);else c.style.display='none';})();
+}
+</script>
+</body>
+</html>
