@@ -84,6 +84,7 @@ const NAME = "Avi";
   .tile.ready .num{color:var(--gold)}
   @keyframes pulse{0%,100%{box-shadow:0 0 0 1px transparent,0 6px 18px rgba(0,0,0,.25)}50%{box-shadow:0 0 0 1px var(--gold-dim),0 6px 26px rgba(230,196,120,.16)}}
   .tile.ready .tap{position:absolute;bottom:9px;font-family:"Jost",sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.9}
+  .tile.opened .tap{position:absolute;bottom:9px;font-family:"Jost",sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);opacity:.75}
 
   .tile.opened{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 22px rgba(230,196,120,.35)}
   .tile.opened .num{color:var(--gold)}
@@ -450,7 +451,7 @@ const DEFAULT_DAYS = [
   setTimeout(shoot,3000);
 })();
 
-const DATA_STORE='aviCountdownData_final3';
+const DATA_STORE='aviCountdownData_final4';
 function loadDays(){try{const s=localStorage.getItem(DATA_STORE);if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_DAYS));}
 function saveDays(d){
   try{localStorage.setItem(DATA_STORE,JSON.stringify(d));return true;}
@@ -473,7 +474,7 @@ function unlockDateFor(i){const d=new Date(startDate);d.setDate(d.getDate()+i);r
 function isUnlocked(i){if(TEST)return true;return todayMid().getTime()>=unlockDateFor(i).getTime();}
 function daysUntil(i){return Math.round((unlockDateFor(i).getTime()-todayMid().getTime())/86400000);}
 
-const OPEN_STORE='aviCountdownOpened_final3';
+const OPEN_STORE='aviCountdownOpened_final4';
 function getOpened(){try{return JSON.parse(localStorage.getItem(OPEN_STORE)||'[]')}catch(e){return[]}}
 function markOpened(i){const o=getOpened();if(!o.includes(i)){o.push(i);localStorage.setItem(OPEN_STORE,JSON.stringify(o))}}
 
@@ -504,7 +505,7 @@ function render(){
     }else{
       t.className+= wasOpened?' opened':' ready';
       if(isFin){t.innerHTML=`<div class="cake">🎂</div><div class="num">Most favourite day of the year!</div>`;}
-      else{const countdownNum=FIN-i;t.innerHTML=`<div class="num">${countdownNum}</div><div class="lbl">${countdownNum===1?'day to go':'days to go'}</div>`+(wasOpened?`<div class="seen">♥</div>`:`<div class="tap">tap to open</div>`);}
+      else{const countdownNum=FIN-i;t.innerHTML=`<div class="num">${countdownNum}</div><div class="lbl">${countdownNum===1?'day to go':'days to go'}</div>`+(wasOpened?`<div class="seen">♥</div><div class="tap">revisit ♥</div>`:`<div class="tap">open ♥</div>`);}
       t.onclick=()=>openCard(i);
     }
     grid.appendChild(t);
@@ -555,21 +556,24 @@ function openCard(i){
   let inner=`<div class="close" onclick="closeCard(this)">×</div>`;
 
   if(isFin){
-    inner+=`<h2>Happy Birthday<br><em>${NAME}</em></h2><div class="c-date">${d.date}</div>`;
+    inner+=`<div class="title-plate"><div class="tp-label">The big day</div><div class="tp-date">${d.date}</div><div class="tp-rule"></div></div>`;
+    inner+=`<h2>Happy Birthday<br><em>${NAME}</em></h2>`;
     inner+=mediaHTML(d);
     inner+=block(d.memory,'note');
     inner+=block(d.reason,'reason');
     if(d.riddle&&d.riddle.trim()){
       inner+=`<div class="hint-card"><div class="hint-crest">📸</div><div class="tag">Your final hunt</div><div class="tagsub">one last clue, the best one…</div><div class="riddle">${(d.riddle||'').replace(/\n/g,'<br>')}</div><div class="flourish">✦ ✦ ✦</div></div>`;
     }
+    inner+=`<div class="reason-flourish">✦ &nbsp; ✦ &nbsp; ✦</div>`;
   }
   else if(d.cat==='surprise'){
-    inner+=`<div class="c-date">${d.date}</div>`;
+    inner+=`<div class="title-plate"><div class="tp-label">A clue</div><div class="tp-date">${d.date}</div><div class="tp-rule"></div></div>`;
     inner+=`<div class="hint-card"><div class="hint-crest">🔑</div><div class="tag">A clue for you</div><div class="tagsub">follow it and see where it leads…</div><div class="riddle">${(d.riddle||'').replace(/\n/g,'<br>')}</div><div class="flourish">✦ ✦ ✦</div></div>`;
   }
   else if(d.cat==='memory'){
-    inner+=`<div class="c-date">${d.date}</div>`;
+    inner+=`<div class="title-plate"><div class="tp-label">A memory</div><div class="tp-date">${d.date}</div><div class="tp-rule"></div></div>`;
     inner+=memoryHTML(d);
+    inner+=`<div class="reason-flourish">✦ &nbsp; ✦ &nbsp; ✦</div>`;
   }
   else if(d.cat==='reason'){
     inner+=`<div class="title-plate"><div class="tp-label">A reason</div><div class="tp-date">${d.date}</div><div class="tp-rule"></div></div>`;
