@@ -135,11 +135,16 @@ const NAME = "Avi";
   .polaroid .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:2px}
   .mem-story{font-family:"Shippori Mincho",serif;font-size:14px;line-height:1.85;color:var(--ink);letter-spacing:.2px;margin:22px 4px 0;font-weight:400;text-align:left}
 
-  /* ===== REASON TEMPLATE — words-first love letter, soft image below ===== */
+  /* ===== REASON TEMPLATE — title plate + framed column ===== */
+  .title-plate{text-align:center;margin:4px 0 30px}
+  .tp-label{font-family:"Jost",sans-serif;font-size:8.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:500}
+  .tp-date{color:var(--gold-soft);font-style:italic;font-size:22px;letter-spacing:.5px;font-family:"Cormorant",serif}
+  .tp-rule{width:42px;height:1px;background:rgba(230,196,120,.4);margin:14px auto 0}
   .reason-hero{font-family:"Shippori Mincho",serif;font-size:14px;line-height:1.85;font-style:normal;
-    text-align:center;color:#f4dde4;margin:24px 6px 24px;font-weight:400}
-  .reason-mark{text-align:center;color:var(--rose);font-size:34px;line-height:0;margin:30px 0 18px;opacity:.6;font-family:"Cormorant",serif}
-  .reason-img{margin:8px auto 0;max-width:300px;border-radius:140px/120px;overflow:hidden;
+    text-align:center;color:#f4dde4;margin:0 auto;font-weight:400;max-width:78%;padding:4px 22px;
+    border-left:1px solid rgba(230,196,120,.18);border-right:1px solid rgba(230,196,120,.18)}
+  .reason-flourish{text-align:center;color:rgba(230,196,120,.55);font-size:14px;margin-top:30px;letter-spacing:.55em}
+  .reason-img{margin:24px auto 0;max-width:300px;border-radius:140px/120px;overflow:hidden;
     border:1px solid rgba(230,163,180,.3);box-shadow:0 10px 30px rgba(0,0,0,.35)}
   .reason-img img{width:100%;display:block}
   .reason-img.vid{border-radius:18px}
@@ -154,7 +159,7 @@ const NAME = "Avi";
     display:flex;align-items:center;justify-content:center;font-size:26px}
   .hint-card .tag{font-family:"Jost",sans-serif;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
   .hint-card .tagsub{font-family:"Cormorant",serif;font-style:italic;font-size:18px;color:var(--ink-dim);margin-bottom:18px}
-  .hint-card .riddle{font-family:"Cormorant",serif;font-size:16px;font-style:italic;line-height:1.75;color:#f2e7cd}
+  .hint-card .riddle{font-family:"Shippori Mincho",serif;font-size:14px;font-style:normal;line-height:1.85;color:#f2e7cd;font-weight:400}
   .hint-card .flourish{margin-top:18px;color:var(--gold-soft);font-size:18px;opacity:.7;letter-spacing:.4em}
 
   .sig{text-align:center;margin-top:38px;color:var(--gold-soft);font-style:italic;font-size:18px}
@@ -445,7 +450,7 @@ const DEFAULT_DAYS = [
   setTimeout(shoot,3000);
 })();
 
-const DATA_STORE='aviCountdownData_final2';
+const DATA_STORE='aviCountdownData_final3';
 function loadDays(){try{const s=localStorage.getItem(DATA_STORE);if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_DAYS));}
 function saveDays(d){
   try{localStorage.setItem(DATA_STORE,JSON.stringify(d));return true;}
@@ -468,7 +473,7 @@ function unlockDateFor(i){const d=new Date(startDate);d.setDate(d.getDate()+i);r
 function isUnlocked(i){if(TEST)return true;return todayMid().getTime()>=unlockDateFor(i).getTime();}
 function daysUntil(i){return Math.round((unlockDateFor(i).getTime()-todayMid().getTime())/86400000);}
 
-const OPEN_STORE='aviCountdownOpened_final2';
+const OPEN_STORE='aviCountdownOpened_final3';
 function getOpened(){try{return JSON.parse(localStorage.getItem(OPEN_STORE)||'[]')}catch(e){return[]}}
 function markOpened(i){const o=getOpened();if(!o.includes(i)){o.push(i);localStorage.setItem(OPEN_STORE,JSON.stringify(o))}}
 
@@ -536,11 +541,10 @@ function memoryHTML(d){
 }
 /* REASON: words first (hero), soft image below if present */
 function reasonHTML(d){
-  let html=`<div class="reason-mark">&ldquo;</div>`;
-  html+=`<div class="reason-hero">${(d.reason||'').replace(/\n/g,'<br>')}</div>`;
+  let html=`<div class="reason-hero">${(d.reason||'').replace(/\n/g,'<br>')}</div>`;
   if(d.video&&d.video.trim()) html+=`<div class="reason-img vid"><div class="vidwrap"><iframe src="${d.video}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div></div>`;
   else if(d.photo&&d.photo.trim()) html+=`<div class="reason-img"><img src="${d.photo}" alt=""></div>`;
-  else html+=`<div class="reason-mark" style="opacity:.4;font-size:26px">♥</div>`;
+  html+=`<div class="reason-flourish">✦ &nbsp; ✦ &nbsp; ✦</div>`;
   return html;
 }
 
@@ -568,7 +572,7 @@ function openCard(i){
     inner+=memoryHTML(d);
   }
   else if(d.cat==='reason'){
-    inner+=`<div class="c-date">${d.date}</div>`;
+    inner+=`<div class="title-plate"><div class="tp-label">A reason</div><div class="tp-date">${d.date}</div><div class="tp-rule"></div></div>`;
     inner+=reasonHTML(d);
   }
   if(d.note&&d.note.trim())inner+=`<div class="sig">${d.note.replace(/\n/g,'<br>')}</div>`;
